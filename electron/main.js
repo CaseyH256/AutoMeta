@@ -1,8 +1,6 @@
 // electron/main.js
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow } = require('electron')
 const path = require('path')
-const fs = require('fs').promises
-const dialog = require('electron').dialog
 
 // Enable GPU flags to ensure CSS animations/compositing work
 app.commandLine.appendSwitch('enable-gpu-rasterization')
@@ -30,15 +28,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('open-file-dialog', async (event, options) => {
-    const result = await dialog.showOpenDialog(options)
-    return result.filePaths
-  })
-
-  ipcMain.handle('save-file', async (event, filePath, content) => {
-    await fs.writeFile(filePath, content)
-  })
-
   createWindow()
 
   app.on('activate', () => {
