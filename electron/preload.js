@@ -1,6 +1,10 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge } = require('electron');
+const path = require('path');
+const Store = require('electron-store');
+const store = new Store();
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  openFileDialog: (options) => ipcRenderer.invoke('open-file-dialog', options),
-  saveFile: (filePath, content) => ipcRenderer.invoke('save-file', filePath, content),
+  getStoreValue: (key) => store.get(key),
+  setStoreValue: (key, value) => store.set(key, value),
+  pathJoin: (...args) => path.join(...args),
 });
