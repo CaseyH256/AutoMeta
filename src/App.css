@@ -1,0 +1,496 @@
+/* AutoMeta — App.css
+   Final bundled CSS: gradient background, subtle noise layers, slowed gold shimmer,
+   slowed gold scrollbar, 720px layout width, spaced headers/labels, preview line-height.
+*/
+
+/* Base gradient background */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #161616 0%, #1c1c1c 50%, #202020 100%);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle noise layers (behind content) */
+html::before,
+html::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+html::before {
+  background-image: repeating-radial-gradient(
+    circle at 0 0,
+    rgba(255,255,255,0.012) 0,
+    rgba(255,255,255,0.012) 1px,
+    transparent 1px,
+    transparent 100%
+  );
+  background-size: 3px 3px;
+  opacity: 0.7;
+  animation: noiseMove1 80s linear infinite;
+}
+
+html::after {
+  background-image: repeating-radial-gradient(
+    circle at 0 0,
+    rgba(255,255,255,0.008) 0,
+    rgba(255,255,255,0.008) 1px,
+    transparent 1px,
+    transparent 100%
+  );
+  background-size: 5px 5px;
+  opacity: 0.6;
+  animation: noiseMove2 110s linear infinite;
+}
+
+@keyframes noiseMove1 {
+  0% { background-position: 0 0; }
+  100% { background-position: 300px 300px; }
+}
+@keyframes noiseMove2 {
+  0% { background-position: 0 0; }
+  100% { background-position: -400px 400px; }
+}
+
+/* Shimmer animation (gold) */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Gold scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161616;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffd277, #77530a);
+  border-radius: 6px;
+  border: 2px solid rgba(0,0,0,0.25);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffe08a, #8a6310);
+}
+
+/* App container */
+.app {
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: #f0f0f0;
+  min-height: 100vh;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* Constrain main content width to 720px */
+main, section, .form-grid, .preview, .warning, .download-xmp {
+  max-width: 720px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Title with slow shimmer (16s) */
+.app-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #77530a, #ffd277, #77530a);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 16s linear infinite;
+  letter-spacing: 0.5px;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background: #77530a;
+  color: #ffd277;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.theme-toggle:hover {
+  background: #8a6310;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto 1.5rem auto;
+  gap: 0.5rem;
+  background-color: #1e1e1e;
+  padding: 0.45rem;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Individual tab buttons fill available space evenly */
+.tabs button {
+  flex: 1 1 0;
+  margin: 0 0.25rem;
+  padding: 0.55rem 0.75rem;
+  background-color: #242424;
+  border: none;
+  border-radius: 6px;
+  color: #cfcfcf;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  white-space: nowrap;
+}
+
+/* Make sure first/last have no extra margin issues */
+.tabs button:first-child { margin-left: 0; }
+.tabs button:last-child  { margin-right: 0; }
+
+.tabs button:hover {
+  background-color: #363636;
+  color: #fff;
+}
+
+.tabs button.active {
+  background: linear-gradient(90deg, #77530a, #ffd277, #77530a);
+  background-size: 200% auto;
+  animation: shimmer 8s linear infinite;
+  color: #161616;
+  box-shadow: 0 6px 18px rgba(119,83,10,0.12);
+}
+
+/* Forms layout and spacing */
+.form-grid.single {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.25rem;
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: #ffd277;
+  display: block;
+}
+
+input,
+textarea,
+select {
+  background-color: #242424;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  padding: 0.6rem;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9a9a9a;
+}
+
+/* Taller keyword area */
+textarea {
+  min-height: 3.25rem;
+  resize: vertical;
+}
+textarea.keywords {
+  min-height: 5.25rem;
+}
+
+/* Focus states */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #ffd277;
+  box-shadow: 0 0 8px rgba(255,210,119,0.12);
+}
+
+/* CSV Import styled as button */
+.csv-import-label {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.9rem;
+  background: linear-gradient(90deg, #77530a, #ffd277, #77530a);
+  background-size: 200% auto;
+  color: #222;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: shimmer 12s linear infinite;
+  align-self: flex-start;
+}
+
+.csv-import-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(119,83,10,0.12);
+}
+
+.csv-import {
+  display: none;
+}
+
+/* Tooltip */
+.tooltip {
+  margin-left: 0.45rem;
+  cursor: help;
+  color: #ffd277;
+  position: relative;
+  font-weight: 700;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 260px;
+  background-color: #242424;
+  color: #f0f0f0;
+  text-align: left;
+  border-radius: 6px;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 30;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  border: 1px solid rgba(119,83,10,0.9);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Buttons */
+button,
+.download-xmp {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(90deg, #77530a, #ffd277, #77530a);
+  background-size: 200% auto;
+  border: none;
+  border-radius: 8px;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: shimmer 12s linear infinite;
+  align-self: flex-start;
+}
+
+button:hover,
+.download-xmp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(119,83,10,0.14);
+}
+
+/* Center the primary download button */
+button.download-xmp {
+  display: block;
+  margin: 1rem auto;
+  align-self: center;
+}
+
+/* Preview */
+.preview {
+  text-align: left;
+  line-height: 1.4;
+  background-color: rgba(30,30,30,0.95);
+  border: 1px solid rgba(60,60,60,0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.25rem;
+  white-space: pre-wrap;
+  font-size: 0.92rem;
+  color: #dcdcdc;
+  max-width: 720px;
+  box-sizing: border-box;
+}
+
+/* Warning text (EXIF) */
+.warning {
+  text-align: center;
+  margin: 1rem auto;
+  max-width: 720px;
+  color: #ffb347;
+  font-weight: 700;
+}
+
+/* Section headers */
+section h2,
+section h3 {
+  text-align: center;
+  margin: 2rem auto 0.75rem auto;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #77530a;
+  color: #ffd277;
+  max-width: 720px;
+}
+
+/* EXIF header */
+.exif-header {
+  color: #ffb347;
+  border-bottom: 1px solid #77530a;
+}
+
+/* Keyword count */
+.keyword-count {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #9acd32;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(4px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Small responsive tweak */
+@media (max-width: 760px) {
+  .tabs { justify-content: space-between; gap: 0.35rem; padding: 0.35rem; }
+  .tabs button { font-size: 0.9rem; padding: 0.5rem 0.4rem; }
+  .app-title { font-size: 1.6rem; }
+  .form-grid.single { gap: 1rem; }
+}
+
+body.light {
+  --background: #f5f5f5;
+  --text: #222;
+  background: var(--background); /* Plain white */
+  color: var(--text);
+}
+
+body.dark {
+  --background: #121212;
+  --text: #f5f5f5;
+  background: linear-gradient(135deg, #161616 0%, #1c1c1c 50%, #202020 100%);
+  color: var(--text);
+}
+
+/* Adjust for light mode */
+body.light .app-title {
+  color: #77530a;
+}
+
+body.light .tabs {
+  background: #ddd;
+}
+
+body.light .tabs button {
+  background: #f0f0f0;
+  color: #333;
+}
+
+body.light .tabs button.active {
+  background: var(--accent-hover);
+  color: white;
+}
+
+body.light input,
+body.light textarea {
+  background: white;
+  border-color: #ccc;
+  color: #333;
+}
+
+body.light .preview {
+  background: #f9f9f9;
+  color: #333;
+  border-color: #ccc;
+}
+
+body.light label {
+  color: #333;
+}
+
+/* No noise in light mode */
+body.light html::before,
+body.light html::after {
+  display: none;
+}
+
+/* Merged gold accents for buttons/tabs */
+.gold-button {
+  background: linear-gradient(135deg, #f5d020, #f53803);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.5);
+  transition: all 0.3s ease;
+  animation: shimmer 2s infinite;
+}
+.gold-button:hover { transform: scale(1.05); }
+
+/* Global gold accents for MUI */
+.MuiTabs-root {
+  background: linear-gradient(135deg, #f5d020, #f53803);
+  color: white;
+}
+
+.MuiTab-root {
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input, select {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #f5d020;
+  border-radius: 4px;
+}
+
+pre {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Add more modern styles as needed per plan */

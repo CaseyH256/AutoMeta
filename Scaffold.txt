@@ -1,0 +1,20 @@
+Root/ (lightroom-preset-app Local), (AutoMeta GitHub)
+├─ AutoMeta App Plan.docx
+├─ index.html
+├─ package.json
+├─ package-lock.json
+├─ Scaffold.text
+├─ start-dev.bat
+├─ start-dev.sh
+├─ vite.config.js
+├─	electron/
+│	├─ main.cjs
+│	├─ main.js
+│	└─ preload.js
+├─	node_modules/
+├─	public/
+│	└─ favicon.png
+├─	src/
+│	├─ App.css
+│	├─ App.jsx
+│	└─ main.jsx
