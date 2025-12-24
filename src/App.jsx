@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './App.css'
 
 export default function App() {
   const [tab, setTab] = useState('metadata')
-  const [theme, setTheme] = useState('system')
 
   // Basic fields
   const [name, setName] = useState('')
@@ -48,160 +47,22 @@ export default function App() {
   const [transmissionRef, setTransmissionRef] = useState('')
   const [urgency, setUrgency] = useState('')
 
-  // Import preset fields (develop settings)
-  const [autoTone, setAutoTone] = useState(false)
-  const [profile, setProfile] = useState('Adobe Color')
-  const [whiteBalance, setWhiteBalance] = useState('As Shot')
-  const [temp, setTemp] = useState('')
-  const [tint, setTint] = useState('')
-  const [devExposure, setDevExposure] = useState('0')
-  const [contrast, setContrast] = useState('0')
-  const [highlights, setHighlights] = useState('0')
-  const [shadows, setShadows] = useState('0')
-  const [whites, setWhites] = useState('0')
-  const [blacks, setBlacks] = useState('0')
-  const [clarity, setClarity] = useState('0')
-  const [vibrance, setVibrance] = useState('0')
-  const [saturation, setSaturation] = useState('0')
-
-  useEffect(() => {
-    const handleThemeChange = () => {
-      if (theme === 'system') {
-        document.body.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches)
-      }
-    }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleThemeChange)
-    handleThemeChange()
-    return () => window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', handleThemeChange)
-  }, [theme])
-
-  useEffect(() => {
-    document.body.classList.remove('light', 'dark')
-    if (theme === 'light') document.body.classList.add('light')
-    if (theme === 'dark') document.body.classList.add('dark')
-  }, [theme])
-
   function escapeXml(s) {
     return String(s ?? '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;')
+      .replace(/\"/g, '&quot;')
+      .replace(/'/g, '&apos;')
   }
 
-  function generateXmpString(isImport = false) {
-    const esc = escapeXml
-    const keywordList = keywords.split(',').map(k => `<rdf:li>${esc(k.trim())}</rdf:li>`).join('\n          ')
-    let developSection = ''
-    if (isImport) {
-      developSection = `
-      <crs:AutoTone>${autoTone ? 'True' : 'False'}</crs:AutoTone>
-      <crs:CameraProfile>${esc(profile)}</crs:CameraProfile>
-      <crs:WhiteBalance>${esc(whiteBalance)}</crs:WhiteBalance>
-      <crs:Temperature>${esc(temp)}</crs:Temperature>
-      <crs:Tint>${esc(tint)}</crs:Tint>
-      <crs:Exposure2012>${esc(devExposure)}</crs:Exposure2012>
-      <crs:Contrast2012>${esc(contrast)}</crs:Contrast2012>
-      <crs:Highlights2012>${esc(highlights)}</crs:Highlights2012>
-      <crs:Shadows2012>${esc(shadows)}</crs:Shadows2012>
-      <crs:Whites2012>${esc(whites)}</crs:Whites2012>
-      <crs:Blacks2012>${esc(blacks)}</crs:Blacks2012>
-      <crs:Clarity2012>${esc(clarity)}</crs:Clarity2012>
-      <crs:Vibrance>${esc(vibrance)}</crs:Vibrance>
-      <crs:Saturation>${esc(saturation)}</crs:Saturation>`
-    }
-    return `<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>
-<x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:RDF>
-    <rdf:Description rdf:about=""
-      xmlns:dc="http://purl.org/dc/elements/1.1/"
-      xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/"
-      xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/"
-      xmlns:exif="http://ns.adobe.com/exif/1.0/"
-      xmlns:plus="http://ns.useplus.org/ldf/xmp/1.0/"
-      xmlns:iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
-      ${isImport ? 'xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/"' : ''}>
-      <dc:creator>
-        <rdf:Seq>
-          <rdf:li>${esc(name)}</rdf:li>
-        </rdf:Seq>
-      </dc:creator>
-      <dc:title>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">${esc(title)}</rdf:li>
-        </rdf:Alt>
-      </dc:title>
-      <dc:description>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">${esc(caption)}</rdf:li>
-        </rdf:Alt>
-      </dc:description>
-      <dc:subject>
-        <rdf:Bag>
-          ${keywordList}
-        </rdf:Bag>
-      </dc:subject>
-      <dc:rights>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">© ${esc(name)} ${year}</rdf:li>
-        </rdf:Alt>
-      </dc:rights>
-      <photoshop:Credit>${esc(studio)}</photoshop:Credit>
-      <photoshop:Source>${esc(website)}</photoshop:Source>
-      <photoshop:TransmissionReference>${esc(jobId)}</photoshop:TransmissionReference>
-      <photoshop:City>${esc(city)}</photoshop:City>
-      <photoshop:State>${esc(state)}</photoshop:State>
-      <photoshop:Country>${esc(country)}</photoshop:Country>
-      <photoshop:Location>${esc(sublocation)}</photoshop:Location>
-      <xmpRights:Owner>
-        <rdf:Bag>
-          <rdf:li>${esc(rightsHolder)}</rdf:li>
-        </rdf:Bag>
-      </xmpRights:Owner>
-      <xmpRights:UsageTerms>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">${esc(usageTerms)}</rdf:li>
-        </rdf:Alt>
-      </xmpRights:UsageTerms>
-      <xmpRights:WebStatement>${esc(copyrightUrl)}</xmpRights:WebStatement>
-      <plus:ModelReleaseStatus>${esc(modelRelease)}</plus:ModelReleaseStatus>
-      <plus:PropertyReleaseStatus>${esc(propertyRelease)}</plus:PropertyReleaseStatus>
-      <dc:type>${esc(imageType)}</dc:type>
-      <iptc4xmpCore:CreatorContactInfo rdf:parseType="Resource">
-        <iptc4xmpCore:CiAdrExtadr>${esc(address)}</iptc4xmpCore:CiAdrExtadr>
-        <iptc4xmpCore:CiAdrPcode>${esc(postalCode)}</iptc4xmpCore:CiAdrPcode>
-        <iptc4xmpCore:CiTelWork>${esc(phone)}</iptc4xmpCore:CiTelWork>
-        <iptc4xmpCore:CiEmailWork>${esc(email)}</iptc4xmpCore:CiEmailWork>
-      </iptc4xmpCore:CreatorContactInfo>
-      <exif:Model>${esc(cameraModel)}</exif:Model>
-      <exif:Lens>${esc(lens)}</exif:Lens>
-      <exif:FocalLength>${esc(focalLength)}</exif:FocalLength>
-      <exif:ExposureTime>${esc(exposure)}</exif:ExposureTime>
-      <exif:ISOSpeedRatings>
-        <rdf:Seq>
-          <rdf:li>${esc(iso)}</rdf:li>
-        </rdf:Seq>
-      </exif:ISOSpeedRatings>
-      <exif:Flash rdf:parseType="Resource">
-        <exif:Fired>${esc(flash)}</exif:Fired>
-      </exif:Flash>
-      <exif:DateTimeOriginal>${esc(captureDate)}</exif:DateTimeOriginal>
-      <photoshop:Instructions>${esc(instructions)}</photoshop:Instructions>
-      <photoshop:Urgency>${esc(urgency)}</photoshop:Urgency>
-      ${developSection}
-    </rdf:Description>
-  </rdf:RDF>
-</x:xmpmeta>
-<?xpacket end="w"?>`
-  }
+  function downloadXmp() {
+    const xmp = `<?xpacket begin=\"\uFEFF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n<x:xmpmeta xmlns:x=\"adobe:ns:meta/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:photoshop=\"http://ns.adobe.com/photoshop/1.0/\" xmlns:xmpRights=\"http://ns.adobe.com/xap/1.0/rights/\">\n  <rdf:RDF>\n    <rdf:Description>\n      <dc:creator><rdf:Seq><rdf:li>${escapeXml(name)}</rdf:li></rdf:Seq></dc:creator>\n      <dc:title><rdf:Alt><rdf:li xml:lang=\"x-default\">${escapeXml(title)}</rdf:li></rdf:Alt></dc:title>\n      <dc:description><rdf:Alt><rdf:li xml:lang=\"x-default\">${escapeXml(caption)}</rdf:li></rdf:Alt></dc:description>\n      <dc:subject><rdf:Bag>${keywords.split(',').map(k => `<rdf:li>${escapeXml(k.trim())}</rdf:li>`).join('\n')}</rdf:Bag></dc:subject>\n      <dc:rights><rdf:Alt><rdf:li xml:lang=\"x-default\">© ${escapeXml(name)} ${year}</rdf:li></rdf:Alt></dc:rights>\n      <photoshop:Credit>${escapeXml(studio)}</photoshop:Credit>\n      <photoshop:Source>${escapeXml(website)}</photoshop:Source>\n      <photoshop:TransmissionReference>${escapeXml(jobId)}</photoshop:TransmissionReference>\n    </rdf:Description>\n  </rdf:RDF>\n</x:xmpmeta>\n<?xpacket end=\"w\"?>`
 
-  function downloadXmp(isImport = false) {
-    const xmp = generateXmpString(isImport)
     const blob = new Blob([xmp], { type: 'application/xml' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = isImport ? 'raw-import-preset.xmp' : 'metadata-preset.xmp'
+    a.download = 'metadata-preset.xmp'
     document.body.appendChild(a)
     a.click()
     a.remove()
@@ -230,17 +91,12 @@ export default function App() {
     <div className="app">
       <header>
         <h1 className="app-title">AutoMeta</h1>
-        <select value={theme} onChange={e => setTheme(e.target.value)} className="theme-toggle">
-          <option value="system">System</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
       </header>
 
       <nav className="tabs">
         <button className={tab === 'metadata' ? 'active' : ''} onClick={() => setTab('metadata')}>Metadata</button>
         <button className={tab === 'keywords' ? 'active' : ''} onClick={() => setTab('keywords')}>Keywords</button>
-        <button className={tab === 'import' ? 'active' : ''} onClick={() => setTab('import')}>RAW Import Presets</button>
+        <button className={tab === 'raw' ? 'active' : ''} onClick={() => setTab('raw')}>RAW Sidecars</button>
         <button className={tab === 'advanced' ? 'active' : ''} onClick={() => setTab('advanced')}>Advanced</button>
       </nav>
 
@@ -269,7 +125,7 @@ export default function App() {
               {keywords && <div className="keyword-count">{keywords.split(',').length} keywords</div>}
             </div>
 
-            <button className="download-xmp" onClick={() => downloadXmp(false)}>Download Metadata XMP</button>
+            <button className="download-xmp" onClick={downloadXmp}>Download XMP</button>
 
             <h3>Preview</h3>
             <pre className="preview">{`
@@ -363,50 +219,6 @@ Urgency: ${urgency}
               <div className="form-group"><label>Transmission Reference <Tooltip text="Identifier for agency or publisher workflow." /><input type="text" value={transmissionRef} onChange={e=>setTransmissionRef(e.target.value)} /></label></div>
               <div className="form-group"><label>Urgency / Priority <Tooltip text="Ranking for speed (1 = highest, 9 = lowest)." /><input type="text" value={urgency} onChange={e=>setUrgency(e.target.value)} /></label></div>
             </div>
-          </section>
-        )}
-
-        {tab === 'keywords' && (
-          <section>
-            <h2>Keywords Management</h2>
-            <div className="form-grid single">
-              <div className="form-group">
-                <label>Keyword List <Tooltip text="Manage and batch-apply keywords." />
-                  <textarea className="keywords" value={keywords} onChange={e=>setKeywords(e.target.value)} placeholder="portrait, studio, model" />
-                </label>
-                <label className="csv-import-label">
-                  Import batch CSV
-                  <input className="csv-import" type="file" accept=".csv" onChange={handleCsvImport} />
-                </label>
-              </div>
-            </div>
-            {keywords && <div className="keyword-count">{keywords.split(',').length} keywords loaded</div>}
-            <button onClick={() => alert('Saved as preset! (Local storage coming in v1.1)')}>Save Keyword Preset</button>
-          </section>
-        )}
-
-        {tab === 'import' && (
-          <section>
-            <h2>RAW Import Presets</h2>
-            <p>Customize develop settings + metadata for RAW imports (auto lighting, profiles, etc.).</p>
-            <h3>Develop Settings</h3>
-            <div className="form-grid single">
-              <div className="form-group"><label>Auto Tone <Tooltip text="Apply auto adjustments." /><input type="checkbox" checked={autoTone} onChange={e=>setAutoTone(e.target.checked)} /></label></div>
-              <div className="form-group"><label>Camera Profile <Tooltip text="e.g., Adobe Color, Camera Standard." /><input type="text" value={profile} onChange={e=>setProfile(e.target.value)} placeholder="Adobe Color" /></label></div>
-              <div className="form-group"><label>White Balance <Tooltip text="As Shot, Auto, Custom, etc." /><input type="text" value={whiteBalance} onChange={e=>setWhiteBalance(e.target.value)} placeholder="As Shot" /></label></div>
-              <div className="form-group"><label>Temperature <Tooltip text="Color temp (e.g., 5500)." /><input type="text" value={temp} onChange={e=>setTemp(e.target.value)} placeholder="5500" /></label></div>
-              <div className="form-group"><label>Tint <Tooltip text="Color tint adjustment." /><input type="text" value={tint} onChange={e=>setTint(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Exposure <Tooltip text="Overall brightness (-4 to +4)." /><input type="text" value={devExposure} onChange={e=>setDevExposure(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Contrast <Tooltip text="Contrast level (-100 to +100)." /><input type="text" value={contrast} onChange={e=>setContrast(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Highlights <Tooltip text="Recover highlights (-100 to +100)." /><input type="text" value={highlights} onChange={e=>setHighlights(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Shadows <Tooltip text="Lift shadows (-100 to +100)." /><input type="text" value={shadows} onChange={e=>setShadows(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Whites <Tooltip text="Adjust whites (-100 to +100)." /><input type="text" value={whites} onChange={e=>setWhites(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Blacks <Tooltip text="Adjust blacks (-100 to +100)." /><input type="text" value={blacks} onChange={e=>setBlacks(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Clarity <Tooltip text="Midtone contrast (-100 to +100)." /><input type="text" value={clarity} onChange={e=>setClarity(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Vibrance <Tooltip text="Smart saturation (-100 to +100)." /><input type="text" value={vibrance} onChange={e=>setVibrance(e.target.value)} placeholder="0" /></label></div>
-              <div className="form-group"><label>Saturation <Tooltip text="Overall color intensity (-100 to +100)." /><input type="text" value={saturation} onChange={e=>setSaturation(e.target.value)} placeholder="0" /></label></div>
-            </div>
-            <button className="download-xmp" onClick={() => downloadXmp(true)}>Download RAW Import XMP</button>
           </section>
         )}
       </main>
