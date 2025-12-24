@@ -1,0 +1,1 @@
+(Place a 512×512 PNG here to use as the app icon when packaging. Optional.)
